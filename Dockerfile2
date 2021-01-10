@@ -1,0 +1,26 @@
+#  Base image
+FROM node:13
+MAINTAINER Charl Swart <Charl@mail.com>
+
+# Create app directory in Docker
+RUN mkdir -p /app
+WORKDIR /app
+
+# Copy pakage.json and package-lock.json
+COPY package*.json .
+
+# install dependencies
+RUN npm i -g ionic
+RUN npm install
+
+# Copy app from local environment into the Docker image
+COPY . .
+
+# Rund Build script
+RUN npm run build
+
+# Set API port number
+EXPOSE 8100
+
+# Define Docker's behaviour when the image is run
+CMD ["ionic","serve"]

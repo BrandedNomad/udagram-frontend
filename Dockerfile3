@@ -1,0 +1,36 @@
+#  Base image
+FROM node:13
+MAINTAINER Charl Swart <Charl@mail.com>
+
+# Create app directory in Docker
+WORKDIR /app
+
+# Copy nginx config file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy app from local environment into the Docker image
+COPY . .
+
+# install dependencies
+RUN npm install
+
+# Run Build script
+RUN npm run build
+
+# Install nginX
+RUN apt-get update \
+    && apt-get install -y nginx --option=Dpkg::Options::=--force-confdef\
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && echo "daemon off;" >> /etc/nginx/nginx.conf
+
+WORKDIR /www/data
+
+# Create app directory
+RUN mv /app/www/* /www/data/. && rm -rf /app
+
+# Set API port number
+EXPOSE 8100
+
+# Define Docker's behaviour when the image is run
+CMD ["nginx"]
