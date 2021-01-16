@@ -22,7 +22,7 @@ WORKDIR /www/data
 # Create app directory
 RUN mv /usr/src/app/www/* /www/data/. && rm -rf /usr/src/app
 
-EXPOSE 8100
+EXPOSE 8080
 
 CMD ["nginx"]
 
